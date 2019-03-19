@@ -4,7 +4,8 @@ to [Android's pseudolocales feature](https://developer.android.com/guide/topics/
 
 This is implemented as an `LD_PRELOAD` shared library.
 
-![Office Runner](images/office-runner.png)
+![Office Runner Left-to-Right](images/office-runner.png)
+![Office Runner Right-to-Left](images/office-runner-rtl.png)
 
 Building
 --------
@@ -20,8 +21,12 @@ Usage
 -----
 
 ```
-LD_PRELOAD=gettext-pseudolocale.so myapplication
+PSEUDOLOCALE_MODE=rtl LD_PRELOAD=gettext-pseudolocale.so myapplication
 ```
+
+`PSEUDOLOCALE_MODE` can be one of:
+- `ltr`: mangled and bracketed English looking text (default if `PSEUDOLOCALE_MODE` is omitted)
+- `rtl`: Right-to-left English text
 
 Technical details
 -----------------

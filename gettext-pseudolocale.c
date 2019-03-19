@@ -31,15 +31,34 @@
 
 #include "bent.h"
 
+typedef enum {
+	MODE_LTR,         /* default */
+	MODE_RTL,
+	MODE_MALKOVICH
+} Mode;
+
 static GHashTable *msg_ht = NULL;
 static bool textdomain_inited = false;
+static Mode mode = MODE_LTR;
 
 static void
-msg_ht_init (void)
+pseudolocale_init (void)
 {
+	const char *mode_str;
+
 	if (msg_ht != NULL)
 		return;
 	msg_ht = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+
+	mode_str = g_getenv ("PSEUDOLOCALE_MODE");
+	if (!mode_str)
+		return;
+	if (strcmp (mode_str, "rtl") == 0)
+		mode = MODE_RTL;
+	else if (strcmp (mode_str, "ltr") == 0)
+		mode = MODE_LTR;
+	else if (strcmp (mode_str, "malkovich") == 0)
+		mode = MODE_MALKOVICH;
 }
 
 /* From https://github.com/combatwombat/Lunicode.js/blob/master/lunicode.js#L697 */
@@ -86,26 +105,48 @@ bend (const char *msgid)
 }
 
 static char *
+reverse (const char *msgid)
+{
+	GString *s;
+	char *p;
+
+	s = g_string_new (NULL);
+	for (p = (char *) msgid; *p != '\0'; p = g_utf8_next_char (p)) {
+		gunichar c;
+
+		c = g_utf8_get_char (p);
+		/* Arabic Left Mark (Unicode U+061C) */
+		g_string_append (s, "\xd8\x9c");
+		g_string_append_unichar (s, c);
+	}
+	return g_string_free (s, FALSE);
+}
+
+static char *
 malkovich (const char *__msgid)
 {
 	char *res;
-	char *new_msgid;
+	char *new_msgid = NULL;
 
 	//g_message ("msgid: %s", __msgid);
 
 	assert(textdomain_inited);
-	msg_ht_init();
+	pseudolocale_init();
 
 	res = g_hash_table_lookup (msg_ht, __msgid);
 	if (res)
 		return res;
 
 	if (strcmp (__msgid, "default:LTR") == 0) {
-		g_hash_table_insert (msg_ht, g_strdup (__msgid), g_strdup (__msgid));
-		return (char *) __msgid;
+		new_msgid = (mode == MODE_RTL) ? g_strdup ("default:RTL") : g_strdup (__msgid);
+	} else if (mode == MODE_LTR) {
+		new_msgid = bend (__msgid);
+	} else if (mode == MODE_RTL) {
+		new_msgid = reverse (__msgid);
+	} else if (mode == MODE_MALKOVICH) {
+		new_msgid = g_strdup ("Malkovich");
 	}
-
-	new_msgid = bend (__msgid);
+	assert (new_msgid);
 	g_hash_table_insert (msg_ht, g_strdup (__msgid), new_msgid);
 
 	return (char *) new_msgid;
