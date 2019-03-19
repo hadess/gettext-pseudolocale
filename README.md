@@ -3,6 +3,8 @@ to be used as an `LD_PRELOAD` to mangle English/ASCII
 text into something recognisable, but that would make
 internationalisation issues obvious.
 
+![Office Runner](images/office-runner.png)
+
 Building
 --------
 
