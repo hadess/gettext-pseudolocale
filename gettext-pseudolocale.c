@@ -82,8 +82,7 @@ bend (const char *msgid)
 	}
 	g_string_append (s, " ]");
 
-	p = g_string_free (s, FALSE);
-	return p;
+	return g_string_free (s, FALSE);
 }
 
 static char *
