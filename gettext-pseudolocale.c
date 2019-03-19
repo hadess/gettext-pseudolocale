@@ -70,7 +70,7 @@ bend (const char *msgid)
 
 	if (!bend_ht)
 		bend_ht = bend_init ();
-	s = g_string_new (NULL);
+	s = g_string_new ("[ ");
 	for (p = (char *) msgid; *p != '\0'; p = g_utf8_next_char (p)) {
 		gunichar c, new_c;
 
@@ -80,6 +80,7 @@ bend (const char *msgid)
 			new_c = c;
 		g_string_append_unichar (s, new_c);
 	}
+	g_string_append (s, " ]");
 
 	p = g_string_free (s, FALSE);
 	return p;
