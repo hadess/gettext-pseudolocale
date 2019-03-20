@@ -38,6 +38,7 @@ typedef enum {
 } Mode;
 
 static GHashTable *msg_ht = NULL;
+static bool setlocale_inited = false;
 static bool textdomain_inited = false;
 static Mode mode = MODE_LTR;
 
@@ -131,6 +132,7 @@ malkovich (const char *__msgid)
 	//g_message ("msgid: %s", __msgid);
 
 	assert(textdomain_inited);
+	assert(setlocale_inited);
 	pseudolocale_init();
 
 	res = g_hash_table_lookup (msg_ht, __msgid);
@@ -242,5 +244,6 @@ setlocale (int category, const char *locale)
 {
 	char * (*f)() = dlsym(RTLD_NEXT, "setlocale");
 	assert(f);
+	setlocale_inited = true;
 	return f(LC_ALL, "en_US.UTF-8");
 }
