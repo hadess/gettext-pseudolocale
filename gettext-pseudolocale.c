@@ -86,12 +86,12 @@ bend (const char *msgid)
 {
 	static GHashTable *bend_ht = NULL;
 	GString *s;
-	char *p;
+	const char *p;
 
 	if (!bend_ht)
 		bend_ht = bend_init ();
 	s = g_string_new ("[ ");
-	for (p = (char *) msgid; *p != '\0'; p = g_utf8_next_char (p)) {
+	for (p = msgid; *p != '\0'; p = g_utf8_next_char (p)) {
 		gunichar c, new_c;
 
 		c = g_utf8_get_char (p);
@@ -109,10 +109,10 @@ static char *
 reverse (const char *msgid)
 {
 	GString *s;
-	char *p;
+	const char *p;
 
 	s = g_string_new (NULL);
-	for (p = (char *) msgid; *p != '\0'; p = g_utf8_next_char (p)) {
+	for (p = msgid; *p != '\0'; p = g_utf8_next_char (p)) {
 		gunichar c;
 
 		c = g_utf8_get_char (p);
