@@ -21,7 +21,7 @@ Usage
 -----
 
 ```
-PSEUDOLOCALE_MODE=rtl LD_PRELOAD=gettext-pseudolocale.so myapplication
+PSEUDOLOCALE_MODE=rtl LD_PRELOAD=libgettext-pseudolocale.so myapplication
 ```
 
 `PSEUDOLOCALE_MODE` can be one of:
