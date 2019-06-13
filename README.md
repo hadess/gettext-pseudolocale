@@ -35,6 +35,9 @@ The shared library overrides libintl calls, which are usually part
 of the glibc DSO on Linux systems. This software has not been tested
 on anything but Linux.
 
+Preloading this shared library will have no effect on calls that do not
+use a C (usually glibc's) gettext implementation, such as Python.
+
 License
 -------
 

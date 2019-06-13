@@ -39,7 +39,6 @@ typedef enum {
 
 static GHashTable *msg_ht = NULL;
 static bool setlocale_inited = false;
-static bool textdomain_inited = false;
 static Mode mode = MODE_LTR;
 
 static void
@@ -131,7 +130,6 @@ malkovich (const char *__msgid)
 
 	//g_message ("msgid: %s", __msgid);
 
-	assert(textdomain_inited);
 	assert(setlocale_inited);
 	pseudolocale_init();
 
@@ -223,7 +221,6 @@ textdomain (const char *__domainname)
 {
 	char * (*f)() = dlsym(RTLD_NEXT, "textdomain");
 	assert(f);
-	textdomain_inited = true;
 	return f(__domainname);
 }
 
